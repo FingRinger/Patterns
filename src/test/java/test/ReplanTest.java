@@ -6,27 +6,43 @@ import data.Info;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Keys;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import java.time.Duration;
+
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selectors.byText;
+import static com.codeborne.selenide.Selenide.*;
 
 public class ReplanTest {
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         open("http://localhost:9999");
     }
 
     @Test
-    @DisplayName("Should successful plan and replan meeting")
-    void shouldSuccessfulPlanAndReplanMeeting() {
-     //   Info validUser = DataGenerator.Registration.generateUser("ru");
+    void shouldReplanMeeting() {
         Configuration.holdBrowserOpen = true;
-        $("[placeholder='Город']").setValue(DataGenerator.generateCity("ru"));
-
-
+        Info user = DataGenerator.generateUser(6);
+        $("[placeholder='Город']").setValue(user.getCity());
+        $("[data-test-id='date'] input[class='input__control']").sendKeys(Keys.COMMAND + "a");
+        $("[data-test-id='date'] input[class='input__control']").sendKeys(Keys.DELETE);
+        $("[data-test-id='date'] input[class='input__control']").setValue(user.getDate());
+        $("[name='name']").setValue(user.getName());
+        $("[name='phone']").val(user.getPhone());
+        $("[data-test-id='agreement']").click();
+        $(byText("Запланировать")).click();
+        $("[data-test-id='success-notification'] div[class='notification__content']").shouldBe(visible, Duration.ofSeconds(15))
+                .should(text("Встреча успешно запланирована на " + user.getDate()));
+        $(byText("Запланировать")).click();
+        $("[data-test-id='date'] input[class='input__control']").sendKeys(Keys.COMMAND + "a");
+        $("[data-test-id='date'] input[class='input__control']").sendKeys(Keys.DELETE);
+        $("[data-test-id='date'] input[class='input__control']").setValue(DataGenerator.generateDate(10));
+        $(byText("Запланировать")).click();
+        $("[data-test-id='replan-notification']").shouldBe(visible, Duration.ofSeconds(15));
+        $x(".//span[contains(text(), 'Перепланировать')]//ancestor::button").click();
+        $("[data-test-id='success-notification'] div[class='notification__content']").shouldBe(visible, Duration.ofSeconds(15))
+                .should(text("Встреча успешно запланирована на " + DataGenerator.generateDate(10)));
     }
-
-
-
 }

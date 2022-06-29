@@ -9,49 +9,39 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class DataGenerator {
-    private static Faker faker;
 
-    private DataGenerator() {
-
+    public static Info generateUser(int changeDay) {
+       String city = generateCity();
+       String date = generateDate(changeDay);
+       String name = generateName();
+       String phone = generatePhone();
+       Info user = new Info(city, date, name, phone);
+       return user;
     }
 
-    @BeforeAll
-    static void setUpAll() {
-        faker = new Faker(new Locale("ru"));
-    }
-
-    public static String generateDate(int days) {
-    String date =  LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    public static String generateDate(int changeDay) {
+    String date =  LocalDate.now().plusDays(changeDay).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     return date;
     }
 
-    public static String generateCity(String locale) {
+    public static String generateCity() {
+        Faker faker = new Faker(new Locale("ru"));
     String city = faker.address().city();
     return city;
     }
 
-    public static String generateName(String locale) {
-        String name = faker.name().username();
+    public static String generateName() {
+        Faker faker = new Faker(new Locale("ru"));
+        String name = faker.name().lastName() + " " + faker.name().firstName();
         return name;
     }
 
-    public static String generatePhone(String locale) {
+    public static String generatePhone() {
+        Faker faker = new Faker(new Locale("ru"));
        String phone = faker.phoneNumber().phoneNumber();
        return  phone;
     }
 
-    public static class Registration {
-        private Registration() {
-        }
-
-        public static Info generateUser(String locale) {
-            Faker faker = new Faker(new Locale(locale));
-            return new Info (generateDate(4),
-                    generateCity("ru"),
-                    generateName("ru"),
-                    generatePhone("ru"));
-        }
     }
 
 
-}
