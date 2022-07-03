@@ -24,19 +24,18 @@ public class ReplanTest {
     @Test
     void shouldReplanMeeting() {
         Configuration.holdBrowserOpen = true;
-        Info user = DataGenerator.generateUser(6);
+        Info user = DataGenerator.generateUser();
         $("[placeholder='Город']").setValue(user.getCity());
-        $("[data-test-id='date'] input[class='input__control']").sendKeys(Keys.COMMAND + "a");
-        $("[data-test-id='date'] input[class='input__control']").sendKeys(Keys.DELETE);
-        $("[data-test-id='date'] input[class='input__control']").setValue(user.getDate());
+        $("[data-test-id='date'] input[class='input__control']").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
+        $("[data-test-id='date'] input[class='input__control']").setValue(DataGenerator.generateDate(6));
         $("[name='name']").setValue(user.getName());
         $("[name='phone']").val(user.getPhone());
         $("[data-test-id='agreement']").click();
         $(byText("Запланировать")).click();
         $("[data-test-id='success-notification'] div[class='notification__content']").shouldBe(visible, Duration.ofSeconds(15))
-                .should(text("Встреча успешно запланирована на " + user.getDate()));
+                .should(text("Встреча успешно запланирована на " + DataGenerator.generateDate(6)));
         $(byText("Запланировать")).click();
-        $("[data-test-id='date'] input[class='input__control']").sendKeys(Keys.COMMAND + "a");
+        $("[data-test-id='date'] input[class='input__control']").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[data-test-id='date'] input[class='input__control']").sendKeys(Keys.DELETE);
         $("[data-test-id='date'] input[class='input__control']").setValue(DataGenerator.generateDate(10));
         $(byText("Запланировать")).click();

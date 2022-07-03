@@ -10,12 +10,11 @@ import java.util.Locale;
 
 public class DataGenerator {
 
-    public static Info generateUser(int changeDay) {
+    public static Info generateUser() {
        String city = generateCity();
-       String date = generateDate(changeDay);
        String name = generateName();
        String phone = generatePhone();
-       Info user = new Info(city, date, name, phone);
+       Info user = new Info(city, name, phone);
        return user;
     }
 
@@ -42,6 +41,6 @@ public class DataGenerator {
        return  phone;
     }
 
-    }
+}
 
 
